@@ -2,29 +2,33 @@ import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import * as tf from '@tensorflow/tfjs'
 import '@tensorflow/tfjs-react-native'
+import * as mobilenet from '@tensorflow-models/mobilenet'
 
 class App extends React.Component {
   state = {
-    isTfReady: false
+    isTfReady: false,
+    isModelReady: false
   }
-
   async componentDidMount() {
-    // Wait for tf to be ready.
     await tf.ready()
-    // Signal to the app that tensorflow.js can now be used.
     this.setState({
       isTfReady: true
     })
-
-    console.log(this.state.isTfReady)
+    this.model = await mobilenet.load()
+    this.setState({ isModelReady: true })
   }
-
   render() {
     return (
       <View style={styles.container}>
+        <Text>TFJS ready? {this.state.isTfReady ? <Text>Yes</Text> : ''}</Text>
+
         <Text>
-          TFJS ready?{' '}
-          {this.state.isTfReady ? <Text>Yes</Text> : <Text>Loading Model</Text>}
+          Model ready?{' '}
+          {this.state.isModelReady ? (
+            <Text>Yes</Text>
+          ) : (
+            <Text>Loading Model...</Text>
+          )}
         </Text>
       </View>
     )
